@@ -300,7 +300,7 @@ class AuthenticationBase
      */
     public function id()
     {
-        return $this->user->id ?? null;
+        return $this->user->id;
     }
 
 
