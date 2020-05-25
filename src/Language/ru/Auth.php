@@ -29,12 +29,12 @@ return [
     'loginSuccess'              => 'С возвращением!',
 
     // Forgotten Passwords
-    'forgotDisabled'            => 'Resseting password option has been disabled.', // translate
+    'forgotDisabled'            => 'Восстановление пароля отключено.',
     'forgotNoUser'              => 'Не удалось найти пользователя с этим email.',
     'forgotSubject'             => 'Восстановление пароля',
     'resetSuccess'              => 'Ваш пароль был успешно изменен. Пожалуйста, войдите, используя новый пароль.',
     'forgotEmailSent'           => 'Токен безопасности был отправлен на ваш email. Введите его в поле ниже.',
-    'errorEmailSent'            => 'Unable to send email with password reset instructions to: {0}', // translate
+    'errorEmailSent'            => 'Не удалось отправить письмо с инструкциями по восстановлению пароля на: {0}',
 
     // Passwords
     'errorPasswordLength'       => 'Длина пароля должна быть не менее {0, number} символов(а).',
