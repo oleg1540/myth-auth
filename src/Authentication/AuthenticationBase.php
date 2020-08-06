@@ -168,27 +168,34 @@ class AuthenticationBase
     {
         helper('cookie');
 
-        $user = $this->user();
-
         // Destroy the session data - but ensure a session is still
         // available for flash messages, etc.
         if (isset($_SESSION))
         {
-            foreach ( $_SESSION as $key => $value )
+            foreach ($_SESSION as $key => $value)
             {
-                $_SESSION[ $key ] = NULL;
-                unset( $_SESSION[ $key ] );
+                $_SESSION[$key] = NULL;
+                unset($_SESSION[$key]);
             }
         }
 
         // Regenerate the session ID for a touch of added safety.
         session()->regenerate(true);
 
-        // Take care of any remember me functionality
-        $this->loginModel->purgeRememberTokens($user->id);
+        // Remove the cookie
+        delete_cookie("remember");
 
-        // trigger logout event
-		Events::trigger('logout', $user);
+        // Handle user-specific tasks
+        if ($user = $this->user())
+        {
+            // Take care of any remember me functionality
+            $this->loginModel->purgeRememberTokens($user->id);
+
+            // Trigger logout event
+            Events::trigger('logout', $user);
+
+            $this->user = null;
+        }
     }
 
     /**
@@ -235,19 +242,19 @@ class AuthenticationBase
         $this->loginModel->rememberUser($userID, $selector, hash('sha256', $validator), $expires);
 
         // Save it to the user's browser in a cookie.
-        $appConfig = new App();
+        $appConfig = config('App');
         $response = \Config\Services::response();
 
         // Create the cookie
         $response->setCookie(
-            'remember',                     // Cookie Name
-            $token,                         // Value
-            $this->config->rememberLength,  // # Seconds until it expires
+            'remember',      							// Cookie Name
+            $token,                         			// Value
+            $this->config->rememberLength,  			// # Seconds until it expires
             $appConfig->cookieDomain,
             $appConfig->cookiePath,
             $appConfig->cookiePrefix,
-            false,                          // Only send over HTTPS?
-            true                            // Hide from Javascript?
+            $appConfig->cookieHTTPOnly,                 // Only send over HTTPS?
+            true                    					// Hide from Javascript?
         );
     }
 
@@ -277,18 +284,18 @@ class AuthenticationBase
         // Save it to the user's browser in a cookie.
         helper('cookie');
 
-        $appConfig = new App();
+        $appConfig = config('App');
 
         // Create the cookie
         set_cookie(
-            'remember',               // Cookie Name
-            $selector.':'.$validator, // Value
-            $this->config->rememberLength,  // # Seconds until it expires
+            'remember',      							// Cookie Name
+            $selector.':'.$validator, 					// Value
+            $this->config->rememberLength,  			// # Seconds until it expires
             $appConfig->cookieDomain,
             $appConfig->cookiePath,
             $appConfig->cookiePrefix,
-            false,                  // Only send over HTTPS?
-            true                  // Hide from Javascript?
+            $appConfig->cookieHTTPOnly,                 // Only send over HTTPS?
+            true                  						// Hide from Javascript?
         );
     }
 
